@@ -1,59 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Love.exe</title>
-
-<style>
-body {
-    background:#0f172a;
-    color:#e11d48;
-    font-family:Consolas, monospace;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-    margin:0;
-    text-align:center;
-}
-.box {
-    border:2px solid #e11d48;
-    padding:40px;
-    border-radius:12px;
-    box-shadow:0 0 20px #e11d48;
-}
-button {
-    background:transparent;
-    border:2px solid #e11d48;
-    color:#e11d48;
-    padding:10px 25px;
-    font-size:16px;
-    cursor:pointer;
-    border-radius:6px;
-    margin-top:20px;
-}
-button:hover {
-    background:#e11d48;
-    color:white;
-}
-</style>
-</head>
-
-<body>
-
-<div class="box" id="screen1">
-    <h1>Initializing Love Protocol... ❤️</h1>
-    <button onclick="next()">NEXT ➜</button>
-</div>
-
-<audio id="voice" src="voice.mp3"></audio>
-
 <script>
 function next() {
-    // play voice
-    document.getElementById("voice").play();
+    const audio = document.getElementById("voice");
 
-    // change screen after 2 sec
+    // play only after user click (browser rule)
+    audio.play().catch(() => {
+        alert("Tap NEXT again to start voice ❤️");
+    });
+
+    // show proposal after 2 sec
     setTimeout(() => {
         document.body.innerHTML = `
         <div class="box">
@@ -77,6 +31,3 @@ function no() {
     alert("Error 404: Love Not Found 😢 Try Again ❤️");
 }
 </script>
-
-</body>
-</html>
