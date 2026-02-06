@@ -1,25 +1,78 @@
-<script>
-function next() {
-    const audio = document.getElementById("voice");
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Love.exe</title>
 
-    // play only after user click (browser rule)
-    audio.play().catch(() => {
-        alert("Tap NEXT again to start voice ❤️");
+<style>
+body {
+    background:#0f172a;
+    color:#e11d48;
+    font-family:Consolas, monospace;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    margin:0;
+    text-align:center;
+}
+.box {
+    border:2px solid #e11d48;
+    padding:40px;
+    border-radius:12px;
+    box-shadow:0 0 20px #e11d48;
+}
+button {
+    background:transparent;
+    border:2px solid #e11d48;
+    color:#e11d48;
+    padding:10px 25px;
+    font-size:16px;
+    cursor:pointer;
+    border-radius:6px;
+    margin-top:20px;
+}
+button:hover {
+    background:#e11d48;
+    color:white;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Background Music -->
+<audio id="bgmusic" src="voice.mp3" loop></audio>
+
+<div class="box">
+    <h1>Tap anywhere to Initialize Love Protocol ❤️</h1>
+    <button onclick="start()">START ➜</button>
+</div>
+
+<script>
+
+function start() {
+    // Start music (user interaction required)
+    const music = document.getElementById("bgmusic");
+    music.play().catch(() => {
+        alert("Tap START again to enable sound ❤️");
     });
 
-    // show proposal after 2 sec
-    setTimeout(() => {
-        document.body.innerHTML = `
-        <div class="box">
-            <h1>Will you be my Valentine? 💖</h1>
-            <button onclick="yes()">YES 💘</button>
-            <button onclick="no()">NO 🙈</button>
-        </div>`;
-    }, 2000);
+    // Move to proposal screen
+    document.body.innerHTML = `
+    <audio id="bgmusic" src="voice.mp3" loop autoplay></audio>
+
+    <div class="box">
+        <h1>Will you be my Valentine? 💖</h1>
+        <button onclick="yes()">YES 💘</button>
+        <button onclick="no()">NO 🙈</button>
+    </div>`;
 }
 
 function yes() {
     document.body.innerHTML = `
+    <audio id="bgmusic" src="voice.mp3" loop autoplay></audio>
+
     <div style="color:#22c55e;font-family:Consolas;text-align:center;">
         <h1>Access Granted ❤️</h1>
         <h2>Love Connection Established 💞</h2>
@@ -30,4 +83,8 @@ function yes() {
 function no() {
     alert("Error 404: Love Not Found 😢 Try Again ❤️");
 }
+
 </script>
+
+</body>
+</html>
