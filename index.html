@@ -42,6 +42,7 @@
 <body>
     <canvas id="star-canvas"></canvas>
     <audio id="roseMusic" src="voice.mp3" preload="auto"></audio>
+    <audio id="chocoMusic" src="choco.mp3" preload="auto"></audio>
     <div id="boot-screen"><div class="term-box" id="term"></div></div>
 
     <div id="challenge">
@@ -154,19 +155,21 @@
 
         function showSurprise(item) {
 
-    const music = document.getElementById("roseMusic");
+    const rose = document.getElementById("roseMusic");
+    const choco = document.getElementById("chocoMusic");
 
-    // Play music ONLY for Rose Day
+    // Stop all music first
+    if (rose) { rose.pause(); rose.currentTime = 0; }
+    if (choco) { choco.pause(); choco.currentTime = 0; }
+
+    // 🌹 Rose Day music
     if (item.n === "Rose Day") {
-        if (music) {
-            music.currentTime = 0;
-            music.play().catch(()=>{});
-        }
-    } else {
-        if (music) {
-            music.pause();
-            music.currentTime = 0;
-        }
+        if (rose) rose.play().catch(()=>{});
+    }
+
+    // 🍫 Chocolate Day music
+    if (item.n === "Chocolate Day") {
+        if (choco) choco.play().catch(()=>{});
     }
 
     document.documentElement.style.setProperty('--theme', item.color);
@@ -191,11 +194,13 @@
         function closeM() {
     document.getElementById('modal').style.display = 'none';
 
-    const music = document.getElementById("roseMusic");
-    if (music) {
-        music.pause();
-        music.currentTime = 0;
-    }
+    const rose = document.getElementById("roseMusic");
+    const choco = document.getElementById("chocoMusic");
+
+    if (rose) { rose.pause(); rose.currentTime = 0; }
+    if (choco) { choco.pause(); choco.currentTime = 0; }
+}
+
 }
 
         window.addEventListener('keydown', e => { buffer += e.key.toUpperCase(); if(buffer.includes(secret)) { unlocked = true; initUniverse(); } });
