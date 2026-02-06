@@ -1,182 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>LOVE.exe</title>
+<meta charset="UTF-8">
+<title>Love.exe</title>
 
 <style>
-body{
-  margin:0;
-  background:#000;
-  color:#00ff9c;
-  font-family:monospace;
-  overflow:hidden;
+body {
+    background:#0f172a;
+    color:#e11d48;
+    font-family:Consolas, monospace;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    margin:0;
+    text-align:center;
 }
-
-/* TERMINAL */
-#terminal{
-  padding:20px;
-  white-space:pre-line;
-  font-size:16px;
+.box {
+    border:2px solid #e11d48;
+    padding:40px;
+    border-radius:12px;
+    box-shadow:0 0 20px #e11d48;
 }
-
-/* SCENES */
-.scene{
-  position:absolute;
-  inset:0;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  text-align:center;
+button {
+    background:transparent;
+    border:2px solid #e11d48;
+    color:#e11d48;
+    padding:10px 25px;
+    font-size:16px;
+    cursor:pointer;
+    border-radius:6px;
+    margin-top:20px;
 }
-.scene.active{display:flex}
-
-/* BUTTONS */
-button{
-  padding:12px 26px;
-  border:none;
-  border-radius:30px;
-  font-size:18px;
-  cursor:pointer;
-  background:#ff4d6d;
-  color:white;
-  margin:10px;
-}
-
-/* HEART PARTICLES */
-canvas{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
+button:hover {
+    background:#e11d48;
+    color:white;
 }
 </style>
 </head>
 
 <body>
 
-<canvas id="c"></canvas>
-
-<!-- SCENE 1 : TERMINAL -->
-<div id="terminal" class="scene active"></div>
-
-<!-- SCENE 2 : QUESTION -->
-<div id="question" class="scene">
-  <h1>Hemaa ❤️</h1>
-  <p>Sazu has one important question for you…</p>
-  <h2>Will you be my Valentine?</h2>
-  <div>
-    <button onclick="yes()">YES</button>
-    <button id="noBtn" onmouseover="escapeNo()">NO</button>
-  </div>
+<div class="box" id="screen1">
+    <h1>Initializing Love Protocol... ❤️</h1>
+    <button onclick="next()">NEXT ➜</button>
 </div>
 
-<!-- SCENE 3 : FINAL -->
-<div id="final" class="scene">
-  <h1>Thank you, Hemaa 💖</h1>
-  <p>Valentine confirmed.</p>
-  <p><strong>Sazu & Hemaa</strong></p>
-  <p>System status: ❤️ HEART LOCKED 🔐</p>
-</div>
+<audio id="voice" src="voice.mp3"></audio>
 
 <script>
-/* ================== PERSONAL INFO ================== */
-const boyName = "Sazu";
-const girlName = "Hemaa";
+function next() {
+    // play voice
+    document.getElementById("voice").play();
 
-/* ================== TERMINAL BOOT ================== */
-const lines = [
-  "Initializing LOVE.exe...",
-  "Loading emotional modules...",
-  "",
-  `User detected: ${girlName}`,
-  "Access level: FULL ✔",
-  "",
-  `Primary process started by: ${boyName}`,
-  "Verifying heart availability...",
-  "",
-  "ERROR: Heart already reserved",
-  "",
-  "Override protocol engaged...",
-  "Reason: Genuine feelings detected",
-  "",
-  "Launching Valentine module..."
-];
-
-let i=0;
-const terminal=document.getElementById("terminal");
-
-function boot(){
-  if(i<lines.length){
-    terminal.textContent+=lines[i]+"\n";
-    i++;
-    setTimeout(boot,600);
-  }else{
-    setTimeout(()=>{
-      showScene("question");
-    },1000);
-  }
-}
-boot();
-
-/* ================== SCENE CONTROL ================== */
-function showScene(id){
-  document.querySelectorAll(".scene")
-    .forEach(s=>s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
+    // change screen after 2 sec
+    setTimeout(() => {
+        document.body.innerHTML = `
+        <div class="box">
+            <h1>Will you be my Valentine? 💖</h1>
+            <button onclick="yes()">YES 💘</button>
+            <button onclick="no()">NO 🙈</button>
+        </div>`;
+    }, 2000);
 }
 
-/* ================== NO BUTTON ESCAPE ================== */
-function escapeNo(){
-  const btn=document.getElementById("noBtn");
-  btn.style.position="absolute";
-  btn.style.left=Math.random()*80+"vw";
-  btn.style.top=Math.random()*80+"vh";
+function yes() {
+    document.body.innerHTML = `
+    <div style="color:#22c55e;font-family:Consolas;text-align:center;">
+        <h1>Access Granted ❤️</h1>
+        <h2>Love Connection Established 💞</h2>
+        <h3>Forever = You + Me ♾️</h3>
+    </div>`;
 }
 
-/* ================== YES FLOW ================== */
-function yes(){
-  startHearts();
-  showScene("final");
-}
-
-/* ================== HEART PARTICLE ENGINE ================== */
-const canvas=document.getElementById("c");
-const ctx=canvas.getContext("2d");
-
-function resize(){
-  canvas.width=innerWidth;
-  canvas.height=innerHeight;
-}
-resize();
-window.onresize=resize;
-
-let hearts=[];
-
-function startHearts(){
-  hearts=[];
-  for(let i=0;i<70;i++){
-    hearts.push({
-      x:Math.random()*canvas.width,
-      y:canvas.height+Math.random()*200,
-      s:Math.random()*2+1,
-      r:Math.random()*6+4
-    });
-  }
-  animate();
-}
-
-function animate(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  hearts.forEach(h=>{
-    h.y-=h.s;
-    ctx.fillStyle="rgba(255,77,109,0.85)";
-    ctx.beginPath();
-    ctx.arc(h.x,h.y,h.r,0,Math.PI*2);
-    ctx.fill();
-  });
-  requestAnimationFrame(animate);
+function no() {
+    alert("Error 404: Love Not Found 😢 Try Again ❤️");
 }
 </script>
 
