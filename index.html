@@ -8,24 +8,34 @@
     <style>
         :root { --glow: #ff2d55; --bg: #000205; --terminal: #00ff41; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
+        
+        /* Moving Galaxy & Love Emoji Canvas */
         #star-canvas { position: fixed; inset: 0; z-index: 0; background: radial-gradient(circle at center, #000c1d 0%, #000000 100%); }
+
+        /* Boot Screen */
         #boot-screen { position: fixed; inset: 0; background: #000; display: flex; justify-content: center; align-items: center; z-index: 1000; transition: opacity 0.8s; }
         .term-box { width: 90%; max-width: 500px; color: var(--terminal); font-family: 'Courier New', monospace; font-size: 15px; line-height: 1.6; }
+
+        /* Challenge Screen */
         #challenge { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 900; }
         .box { background: #0a0a0a; padding: 35px; border-radius: 25px; border: 1px solid var(--glow); width: 85%; max-width: 350px; box-shadow: 0 0 30px rgba(255, 45, 85, 0.2); text-align: center; }
         .btn-wrap { margin-top: 30px; position: relative; height: 100px; }
         .btn { padding: 12px 35px; border-radius: 50px; border: none; font-weight: bold; cursor: pointer; position: absolute; font-size: 16px; transition: 0.1s; }
         #yes-btn { background: var(--glow); color: white; left: 50%; transform: translateX(-50%); z-index: 10; }
         #no-btn { background: #222; color: #888; right: 10%; }
+
+        /* Main UI */
         #main-ui { opacity: 0; transition: 1.5s; height: 100vh; display: flex; flex-direction: column; align-items: center; z-index: 10; position: relative; pointer-events: none; }
         #main-ui.active { opacity: 1; pointer-events: auto; }
         .universe { position: relative; width: 100vw; height: 75vh; display: flex; justify-content: center; align-items: center; }
+        
         .day-node { position: absolute; width: 80px; height: 80px; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; transition: all 0.4s ease; border: 2px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(5px); }
         .day-node:hover:not(.locked) { transform: scale(1.1); border-color: var(--theme); box-shadow: 0 0 25px var(--theme); }
         .day-node.locked { border-color: #333; opacity: 0.3; }
+
         #modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(10px); }
         .modal-card { background: #050505; padding: 25px; border-radius: 30px; border: 1px solid var(--theme, #ff2d55); text-align: center; width: 90%; max-width: 400px; }
-        .modal-media { width: 100%; border-radius: 15px; margin: 15px 0; border: 1px solid var(--theme); display: none; }
+        .modal-img { width: 100%; border-radius: 15px; margin: 15px 0; display: none; border: 1px solid var(--theme); }
         .tech-log { text-align: left; font-size: 11px; color: var(--terminal); background: #000; padding: 10px; border-radius: 8px; margin: 15px 0; border-left: 2px solid var(--theme); font-family: monospace; }
     </style>
 </head>
@@ -33,6 +43,11 @@
     <canvas id="star-canvas"></canvas>
     <audio id="roseMusic" src="voice.mp3" preload="auto"></audio>
     <audio id="chocoMusic" src="choco.mp3" preload="auto"></audio>
+    <audio id="teddyMusic" src="https://raw.githubusercontent.com/CreativeThinking123/valentine-tech/main/orange.mp3" preload="auto"></audio>
+    <audio id="raksMusic" src="https://raw.githubusercontent.com/CreativeThinking123/Divya4u/main/raks.mp3" preload="auto"></audio>
+    <audio id="cheliyaMusic" src="https://raw.githubusercontent.com/CreativeThinking123/Divya4u/main/cheliya.mp3" preload="auto"></audio>
+    <audio id="neetiMusic" src="https://raw.githubusercontent.com/CreativeThinking123/Divya4u/main/neeti.mp3" preload="auto"></audio>
+    <audio id="sundariMusic" src="https://raw.githubusercontent.com/CreativeThinking123/Divya4u/main/sundari.mp3" preload="auto"></audio>
     <div id="boot-screen"><div class="term-box" id="term"></div></div>
 
     <div id="challenge">
@@ -48,47 +63,65 @@
     </div>
 
     <div id="main-ui">
-        <h1 style="margin-top:40px; color:var(--glow); letter-spacing: 5px;">SANKAR ❤️ DIVYA</h1>
+        <h1 style="margin-top:40px; color:var(--glow); letter-spacing: 5px;">SANKAR ❤️ Divya</h1>
         <div class="universe" id="universe"></div>
     </div>
 
-    <div id="modal" onclick="closeM()">
-        <div class="modal-card" onclick="event.stopPropagation()">
-            <div id="m-icon" style="font-size:50px;"></div>
-            <h2 id="m-title" style="margin: 10px 0;"></h2>
-            
-            <img id="m-img" class="modal-media">
-            <video id="m-video" class="modal-media" controls playsinline></video>
-            
-            <p id="m-desc" style="color: #ccc;"></p>
-            <div class="tech-log" id="m-stat"></div>
-            <button onclick="closeM()" style="width:100%; padding:12px; border-radius:25px; background:var(--theme); color:white; border:none; font-weight:bold; cursor:pointer;">Back to Galaxy</button>
-        </div>
-    </div>
+    <div id="modal" onclick="closeM()"><div class="modal-card" onclick="event.stopPropagation()">
+        <div id="m-icon" style="font-size:50px;"></div>
+        <h2 id="m-title" style="margin: 10px 0;"></h2>
+        <img id="m-img" class="modal-img">
+        <p id="m-desc" style="color: #ccc;"></p>
+        <div class="tech-log" id="m-stat"></div>
+        <button onclick="closeM()" style="width:100%; padding:12px; border-radius:25px; background:var(--theme); color:white; border:none; font-weight:bold; cursor:pointer;">Back to Galaxy</button>
+    </div></div>
 
     <script>
         const secret = "LOVE2026";
-        let buffer = ""; let isUnlocked = false;
+let buffer = ""; 
+let isUnlocked = false;
+let unlockedDays = {};
+
+// ⭐ PASTE HERE
+const secretQuestions = {
+    7:  { q: "Did Sankar give any flower? 🌹", a: "rose" },
+    8:  { q: "Who proposed first? 💍", a: "sankar" },
+    9:  { q: "What was the first chocolate he gave for you? 🍫", a: "dairymilk" },
+    10: { q: "What gift did Sankar give? 🧸", a: "heart" },
+    11: { q: "What did Sankar promise? 🤝", a: "foreverforyou" },
+    12: { q: "In a true hug, two hearts share what? 🫂", a: "one soul" },
+    13: { q: "A kiss is a promise of what? 💋", a: "foreverlove" },
+    14: { q: "Who is your Valentine? 💝", a: "sankar" }
+};
+
+
 
         const bootLines = [
             "> [SYSTEM] Booting Sankar's Valentine Engine...",
             "> [SYSTEM] Found beautiful girl in the galaxy...",
-            "> [AUTH] Checking Divya's Credentials...",
+            "> [AUTH] Checking Divya Credentials...",
             "> [OK] Most Beautiful Girl Authenticated.",
             "> [LOAD] Mapping Constellation...",
             "> [DONE] Systems Online."
         ];
 
-        const waitMessages = ["Wait Divya! Sankar is still cooking this surprise!", "Error: Patience required!", "Hold on Divya! ✨"];
-        const noMessages = ["Try again!", "Error: Invalid Choice", "Sankar says No to 'No'!"];
+        const waitMessages = [
+            "Wait Divya! Sankar is still cooking this surprise! 👨‍💻",
+            "Error: Patience required! Wait for Feb ",
+            "Nice try Divya! But you can't time travel yet! 🚀",
+            " Divya, clicking this won't make Sankar love you faster! ❤️",
+            "Hold on Divya! This star is still aligning! ✨"
+        ];
+
+        const noMessages = ["Try again!", "Error: Invalid Choice", "Sankar says No to 'No'!", "Wrong button, Divya!"];
 
         const data = [
-            { d: 7, n: "Rose Day", i: "🌹", color: "#ff2d55", m: "A digital rose for you, Divya!", s: "MODE: Floral\nSTATUS: Eternal", img: "https://github.com/CreativeThinking123/sazu/raw/main/rose.jpg" },
-            { d: 8, n: "Propose Day", i: "💍", color: "#ff5e78", m: "Will you stay in my heart forever?", s: "PROTO: Soul_Shake", img: "https://github.com/CreativeThinking123/sazu/raw/main/propose.jpg" },
-            { d: 6, n: "Chocolate Day", i: "🍫", color: "#a855f7", m: "Sweeter than chocolate, that's you!", s: "BYTE: Sweet", img: "https://static.vecteezy.com/system/resources/previews/036/271/645/non_2x/ai-generated-a-man-gives-a-woman-chocolates-on-valentine-s-day-in-cartoon-style-transparent-background-free-png.png" },
-            { d: 10, n: "Teddy Day", i: "🧸", color: "#f97316", m: "Virtual hugs incoming!", s: "OBJ: Video_Stream", video: "https://github.com/CreativeThinking123/sazu/raw/main/sita.mp4" },
-            { d: 11, n: "Promise Day", i: "🤝", color: "#3b82f6", m: "I promise to be your best partner.", s: "KEY: Sankar_Divya", img: "https://static.india.com/wp-content/uploads/2024/02/MixCollage-11-Feb-2024-01-13-AM-4896.jpg" },
-            { d: 12, n: "Hug Day", i: "🫂", color: "#ec4899", m: "Sending a big squeeze!", s: "SYNC: Active", img: "https://img.freepik.com/premium-vector/valentines-day-girl-hugs-guy-couple-love-vector-cartoon-style_844724-2511.jpg" },
+            { d: 7, n: "Rose Day", i: "🌹", color: "#ff2d55", m: "A digital rose for you, Divya!", s: "MODE: Floral\nSTATUS: Eternal", img: "https://raw.githubusercontent.com/CreativeThinking123/check/main/dv2.jpeg" },
+            { d: 8, n: "Propose Day", i: "💍", color: "#ff5e78", m: "Will you stay in my heart forever?", s: "PROTO: Soul_Shake", img: "https://raw.githubusercontent.com/CreativeThinking123/check/main/dvy.jpeg" },
+            { d: 9, n: "Chocolate Day", i: "🍫", color: "#a855f7", m: "Sweeter than chocolate, that's you!", s: "BYTE: Sweet", img: "https://raw.githubusercontent.com/CreativeThinking123/valentine-tech/main/eighth.jpeg" },
+            { d: 10, n: "Teddy Day", i: "🧸", color: "#f97316", m: "Virtual hugs incoming!", s: "OBJ: Soft_Body", img: "https://raw.githubusercontent.com/CreativeThinking123/check/main/dv3.jpeg" },
+            { d: 11, n: "Promise Day", i: "🤝", color: "#3b82f6", m: "I promise to be your best partner.", s: "KEY: Sankar_ Divya ", img: "https://static.india.com/wp-content/uploads/2024/02/MixCollage-11-Feb-2024-01-13-AM-4896.jpg?impolicy=Medium_Widthonly&w=400" },
+            { d: 12, n: "Hug Day", i: "🫂", color: "#ec4899", m: "Sending a big squeeze!", s: "SYNC: Active", img: "https://img.freepik.com/premium-vector/valentines-day-girl-hugs-guy-couple-love-vector-cartoon-style_844724-2511.jpg?w=360" },
             { d: 13, n: "Kiss Day", i: "💋", color: "#8b5cf6", m: "A million kisses for you!", s: "FREQ: Recursive", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRloIQ2QtFiwAPFCisTIvTgfLZxPIUGiCd2UQ&s" },
             { d: 14, n: "Valentine", i: "💝", color: "#ef4444", m: "You are my forever Valentine, Divya.", s: "LOVE: Infinite", img: "https://png.pngtree.com/png-clipart/20240301/original/pngtree-boy-and-girl-couple-with-hearts-to-valentine-day-png-image_14458771.png" }
         ];
@@ -106,6 +139,7 @@
         function dodge() {
             const b = document.getElementById('no-btn');
             b.style.left = Math.random()*70 + "%"; b.style.top = Math.random()*70 + "%";
+            b.innerText = noMessages[Math.floor(Math.random()*noMessages.length)];
         }
 
         function accept() {
@@ -128,71 +162,123 @@
                 node.style.left = (window.innerWidth/2 + rad * Math.cos(angle) - 40) + "px";
                 node.style.top = (window.innerHeight/2.2 + rad * Math.sin(angle) - 40) + "px";
                 node.innerHTML = `<span style="font-size:30px">${item.i}</span><span style="font-size:9px">FEB ${item.d}</span>`;
-                node.onclick = () => { if (isLocked) alert(waitMessages[0]); else showSurprise(item); };
+               node.onclick = () => {
+
+ // --- SECRET QUESTION SYSTEM FOR ALL DAYS ---
+if(secretQuestions[item.d] && !unlockedDays[item.d]) {
+
+    const qObj = secretQuestions[item.d];
+    const ans = prompt(qObj.q + "\n(Type answer)");
+
+    if(ans?.toLowerCase().trim() === qObj.a) {
+        unlockedDays[item.d] = true;
+        alert("Correct ❤️ " + item.n + " Unlocked!");
+        showSurprise(item);
+    } else {
+        alert("Wrong answer 😜 Try again!");
+    }
+    return;
+}
+
+
+    // Normal lock logic
+    if (isLocked && !unlockedDays[item.d]) {
+        const randomMsg = waitMessages[Math.floor(Math.random()*waitMessages.length)];
+        alert(randomMsg + (randomMsg.includes("Feb") ? item.d : ""));
+    } else {
+        showSurprise(item);
+    }
+};
+
                 u.appendChild(node);
             });
         }
+function showSurprise(item) {
+    // Stop all audio first
+    const allAudios = document.querySelectorAll('audio');
+    allAudios.forEach(audio => { audio.pause(); audio.currentTime = 0; });
 
-        function showSurprise(item) {
-            const rose = document.getElementById("roseMusic");
-            const choco = document.getElementById("chocoMusic");
-            const img = document.getElementById('m-img');
-            const video = document.getElementById('m-video');
+    // Play music based on the specific date (item.d)
+    if (item.d === 7) document.getElementById("roseMusic")?.play().catch(()=>{});
+    if (item.d === 8) document.getElementById("chocoMusic")?.play().catch(()=>{});
+    if (item.d === 9) document.getElementById("raksMusic")?.play().catch(()=>{});     // Chocolate Day
+    if (item.d === 10) document.getElementById("teddyMusic")?.play().catch(()=>{});
+    if (item.d === 12) document.getElementById("cheliyaMusic")?.play().catch(()=>{}); // Hug Day
+    if (item.d === 13) document.getElementById("neetiMusic")?.play().catch(()=>{});   // Kiss Day
+    if (item.d === 14) document.getElementById("sundariMusic")?.play().catch(()=>{}); // Valentine's Day
 
-            // Reset media
-            if (rose) { rose.pause(); rose.currentTime = 0; }
-            if (choco) { choco.pause(); choco.currentTime = 0; }
-            video.pause(); video.style.display = "none";
-            img.style.display = "none";
+    document.documentElement.style.setProperty('--theme', item.color);
+    document.getElementById('m-title').innerText = item.n;
+    document.getElementById('m-icon').innerText = item.i;
+    document.getElementById('m-desc').innerText = item.m;
+    document.getElementById('m-stat').innerText = item.s;
 
-            if (item.n === "Rose Day") rose.play().catch(()=>{});
-            if (item.n === "Chocolate Day") choco.play().catch(()=>{});
+    const img = document.getElementById('m-img');
+    if(item.img) {
+        img.src = item.img;
+        img.onerror = () => { img.style.display = "none"; };
+        img.style.display = "block";
+    } else {
+        img.style.display = "none";
+    }
 
-            document.documentElement.style.setProperty('--theme', item.color);
-            document.getElementById('m-title').innerText = item.n;
-            document.getElementById('m-icon').innerText = item.i;
-            document.getElementById('m-desc').innerText = item.m;
-            document.getElementById('m-stat').innerText = item.s;
+    document.getElementById('modal').style.display = 'flex';
+    confetti({particleCount: 100, colors: [item.color, '#ffffff']});
+}
+function closeM() {
+    document.getElementById('modal').style.display = 'none';
+    const allAudios = document.querySelectorAll('audio');
+    allAudios.forEach(audio => {
+        audio.pause();
+        audio.currentTime = 0;
+    });
+}
 
-            // FIXED: Logic to handle Video vs Image
-            if (item.video) {
-                video.src = item.video;
-                video.style.display = "block";
-                video.play().catch(()=>{});
-            } else if (item.img) {
-                img.src = item.img;
-                img.style.display = "block";
-            }
 
-            document.getElementById('modal').style.display = 'flex';
-            confetti({particleCount: 100, colors: [item.color, '#ffffff']});
-        }
-
-        function closeM() {
-            document.getElementById('modal').style.display = 'none';
-            document.getElementById('m-video').pause();
-            document.getElementById('roseMusic').pause();
-            document.getElementById('chocoMusic').pause();
-        }
-
-        // Animation logic
+        window.addEventListener('keydown', e => { buffer += e.key.toUpperCase(); if(buffer.includes(secret)) { isUnlocked = true; initUniverse(); } });
+        
+        // --- FASTER & BIGGER GALAXY + LOVE EMOJIS ---
         const starCan = document.getElementById('star-canvas'); const starCtx = starCan.getContext('2d');
         let objects = [];
-        const loveEmojis = ["❤️", "💖", "💘"];
+        const loveEmojis = ["❤️", "💖", "💘", "💝", "💕"];
 
         function initStars() {
             starCan.width = window.innerWidth; starCan.height = window.innerHeight;
             objects = [];
-            for(let i=0; i<100; i++) {
-                objects.push({ x: Math.random()*starCan.width, y: Math.random()*starCan.height, s: Math.random()*2, sp: Math.random()*1, type: 'star'});
+            // Create Stars
+            for(let i=0; i<150; i++) {
+                objects.push({ 
+                    x: Math.random()*starCan.width, 
+                    y: Math.random()*starCan.height, 
+                    s: Math.random()*3 + 0.5, // Bigger stars
+                    sp: Math.random()*1.2 + 0.3, // Faster speed
+                    type: 'star'
+                });
+            }
+            // Create Love Emojis
+            for(let i=0; i<15; i++) {
+                objects.push({
+                    x: Math.random()*starCan.width,
+                    y: Math.random()*starCan.height,
+                    s: Math.random()*15 + 10, // Font size for emoji
+                    sp: Math.random()*0.8 + 0.2, // Slightly slower than stars
+                    type: 'emoji',
+                    char: loveEmojis[Math.floor(Math.random()*loveEmojis.length)]
+                });
             }
         }
         function animStars() {
             starCtx.clearRect(0,0,starCan.width, starCan.height);
             objects.forEach(o => {
-                starCtx.fillStyle = "white";
-                starCtx.beginPath(); starCtx.arc(o.x, o.y, o.s, 0, Math.PI*2); starCtx.fill();
-                o.y -= o.sp; if(o.y < -20) o.y = starCan.height + 20;
+                if(o.type === 'star') {
+                    starCtx.fillStyle = "white";
+                    starCtx.beginPath(); starCtx.arc(o.x, o.y, o.s, 0, Math.PI*2); starCtx.fill();
+                } else {
+                    starCtx.font = `${o.s}px serif`;
+                    starCtx.fillText(o.char, o.x, o.y);
+                }
+                o.y -= o.sp; // Movement direction
+                if(o.y < -20) o.y = starCan.height + 20;
             });
             requestAnimationFrame(animStars);
         }
